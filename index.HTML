@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habit Tracker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .tracker-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        .meta-inputs select, .meta-inputs input {
+            border: none;
+            border-bottom: 1px solid #ccc;
+            font-size: 16px;
+            padding: 5px;
+            margin-right: 20px;
+            outline: none;
+            background: transparent;
+            font-weight: bold;
+        }
+
+        .motto {
+            text-align: right;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        h2 {
+            margin: 30px 0 15px 0;
+            color: #2c3e50;
+            border-left: 5px solid #3498db;
+            padding-left: 10px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background: #fff;
+        }
+
+        th, td {
+            border: 1px solid #e0e0e0;
+            text-align: center;
+            padding: 6px;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .habit-input {
+            width: 90%;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            background: transparent;
+        }
+
+        .tracker-select {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            background: transparent;
+            text-align: center;
+            font-weight: bold;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .status-checked {
+            background-color: #2ecc71 !important;
+            color: white !important;
+        }
+
+        .status-crossed {
+            background-color: #e74c3c !important;
+            color: white !important;
+        }
+
+        .hour-label {
+            background-color: #f8f9fa;
+            font-weight: bold;
+            width: 80px;
+        }
+
+        .sleep-select {
+            font-size: 22px;
+            line-height: 1;
+            color: #000;
+        }
+
+        .career-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #fdfdfd;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.01);
+        }
+
+        .circle-container {
+            position: relative;
+            width: 160px;
+            height: 160px;
+        }
+
+        .circle-container svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+
+        .circle-bg {
+            fill: none;
+            stroke: #f1f2f6;
+            stroke-width: 12;
+        }
+
+        .circle-progress {
+            fill: none;
+            stroke: #9b59b6; 
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.35s;
+            transform-origin: 50% 50%;
+        }
+
+        .circle-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .hours-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .hours-label {
+            font-size: 11px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .career-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn-control {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: none;
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+        }
+
+        .btn-minus { background-color: #e74c3c; }
+        .btn-minus:hover { background-color: #c0392b; transform: scale(1.05); }
+
+        .btn-plus { background-color: #2ecc71; }
+        .btn-plus:hover { background-color: #27ae60; transform: scale(1.05); }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            resize: vertical;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="tracker-container">
+    <div class="header">
+        <div class="meta-inputs">
+            <label><strong>MONTH:</strong> 
+                <select id="monthSelector" onchange="loadTracker()">
+                    <option value="January">January</option>
+                    <option value="February">February</option>
+                    <option value="March">March</option>
+                    <option value="April">April</option>
+                    <option value="May" selected>May</option>
+                    <option value="June">June</option>
+                    <option value="July">July</option>
+                    <option value="August">August</option>
+                    <option value="September">September</option>
+                    <option value="October">October</option>
+                    <option value="November">November</option>
+                    <option value="December">December</option>
+                </select>
+            </label>
+            <label><strong>NAME:</strong> <input type="text" id="userNameInput" placeholder="Your Name"></label>
+        </div>
+        <div class="motto">
+            <div>BE CONSISTENT</div>
+            <div style="color: #e74c3c;">NEVER GIVE UP!</div>
+        </div>
+    </div>
+
+    <h2>HABITS / DAYS</h2>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr id="habits-header">
+                    <th style="width: 200px;">Habits</th>
+                </tr>
+            </thead>
+            <tbody id="habits-body"></tbody>
+        </table>
+    </div>
+
+    <h2>SLEEP GRAPH</h2>
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr id="sleep-header">
+                    <th style="width: 80px;">Sleep</th>
+                </tr>
+            </thead>
+            <tbody id="sleep-body"></tbody>
+        </table>
+    </div>
+
+    <h2>CAREER HOURS</h2>
+    <div class="career-section">
+        <div class="circle-container">
+            <svg>
+                <circle class="circle-bg" cx="80" cy="80" r="70"></circle>
+                <circle class="circle-progress" id="progressRing" cx="80" cy="80" r="70"></circle>
+            </svg>
+            <div class="circle-text">
+                <div class="hours-number" id="careerHoursDisplay">0</div>
+                <div class="hours-label">Hours</div>
+            </div>
+        </div>
+        <div class="career-controls">
+            <button class="btn-control btn-minus" onclick="adjustCareerHours(-1)">−</button>
+            <button class="btn-control btn-plus" onclick="adjustCareerHours(1)">+</button>
+        </div>
+        <div style="margin-top: 10px; font-size: 12px; color: #95a5a6;">
+            Target: 100 Hours / Month
+        </div>
+    </div>
+
+    <h2>NOTES</h2>
+    <textarea id="notesArea" placeholder="Write down your thoughts..."></textarea>
+
+    <div class="actions">
+        <button onclick="saveTracker()">Save Data</button>
+        <button onclick="window.print()" style="background-color: #7f8c8d;">Print / Save PDF</button>
+    </div>
+</div>
+
+<script>
+    const totalDays = 31;
+    const totalHabits = 10;
+    const sleepHours = [9, 8, 7, 6, 5];
+    
+    let totalCareerHours = 0;
+    const careerTarget = 100; 
+
+    const habitsHeader = document.getElementById('habits-header');
+    const sleepHeader = document.getElementById('sleep-header');
+    
+    for (let day = 1; day <= totalDays; day++) {
+        habitsHeader.innerHTML += `<th>${day}</th>`;
+        sleepHeader.innerHTML += `<th>${day}</th>`;
+    }
+
+    const habitsBody = document.getElementById('habits-body');
+    for (let i = 1; i <= totalHabits; i++) {
+        let rowHtml = `<tr>
+            <td>
+                <span style="font-weight:bold; margin-right:5px;">${i}.</span>
+                <input type="text" class="habit-input" placeholder="Enter habit...">
+            </td>`;
+        for (let day = 1; day <= totalDays; day++) {
+            rowHtml += `<td>
+                <select class="tracker-select habit-select" onchange="updateHabitColor(this)">
+                    <option value=""></option>
+                    <option value="✓">✓</option>
+                    <option value="✗">✗</option>
+                </select>
+            </td>`;
+        }
+        rowHtml += `</tr>`;
+        habitsBody.innerHTML += rowHtml;
+    }
+
+    const sleepBody = document.getElementById('sleep-body');
+    sleepHours.forEach(hours => {
+        let rowHtml = `<tr>
+            <td class="hour-label">${hours} hrs</td>`;
+        for (let day = 1; day <= totalDays; day++) {
+            rowHtml += `<td>
+                <select class="tracker-select sleep-select" data-hours="${hours}" data-day="${day}" onchange="updateSleepSelection(this, ${day})">
+                    <option value=""></option>
+                    <option value="●">●</option>
+                </select>
+            </td>`;
+        }
+        rowHtml += `</tr>`;
+        sleepBody.innerHTML += rowHtml;
+    });
+
+    function updateHabitColor(selectElement) {
+        const parentCell = selectElement.parentElement;
+        const value = selectElement.value;
+        parentCell.classList.remove('status-checked', 'status-crossed');
+        selectElement.classList.remove('status-checked', 'status-crossed');
+
+        if (value === '✓') {
+            parentCell.classList.add('status-checked');
+            selectElement.classList.add('status-checked');
+        } else if (value === '✗') {
+            parentCell.classList.add('status-crossed');
+            selectElement.classList.add('status-crossed');
+        }
+    }
+
+    function updateSleepSelection(selectElement, day) {
+        const columnSelects = document.querySelectorAll(`select.sleep-select[data-day="${day}"]`);
+        columnSelects.forEach(select => {
+            if (select !== selectElement) {
+                select.value = ""; 
+            }
+        });
+    }
+
+    function adjustCareerHours(amount) {
+        totalCareerHours += amount;
+        if (totalCareerHours < 0) totalCareerHours = 0; 
+        updateCareerUI();
+    }
+
+    function updateCareerUI() {
+        document.getElementById('careerHoursDisplay').innerText = totalCareerHours;
+        const circle = document.getElementById('progressRing');
+        const radius = circle.r.baseVal.value;
+        const circumference = radius * 2 * Math.PI;
+        circle.style.strokeDasharray = `${circumference} ${circumference}`;
+        const percentage = Math.min(totalCareerHours / careerTarget, 1); 
+        const offset = circumference - (percentage * circumference);
+        circle.style.strokeDashoffset = offset;
+    }
+
+    // --- MONTHLY STORAGE MANAGEMENT ---
+    function getStorageKey() {
+        const month = document.getElementById('monthSelector').value;
+        return `habitTrackerData_${month}`;
+    }
+
+    function saveTracker() {
+        const currentKey = getStorageKey();
+        const trackerData = {
+            name: document.getElementById('userNameInput').value,
+            habitsText: Array.from(document.querySelectorAll('.habit-input')).map(i => i.value),
+            habitsSelection: Array.from(document.querySelectorAll('.habit-select')).map(s => s.value),
+            sleepSelection: Array.from(document.querySelectorAll('.sleep-select')).map(s => s.value),
+            careerHours: totalCareerHours, 
+            notes: document.getElementById('notesArea').value
+        };
+        localStorage.setItem(currentKey, JSON.stringify(trackerData));
+        localStorage.setItem('tracker_global_userName', document.getElementById('userNameInput').value);
+        
+        alert(`Progress for ${document.getElementById('monthSelector').value} successfully saved!`);
+    }
+
+    function loadTracker() {
+        const currentKey = getStorageKey();
+        const saved = localStorage.getItem(currentKey);
+        
+        // Reset UI fields cleanly
+        document.getElementById('notesArea').value = "";
+        totalCareerHours = 0;
+        updateCareerUI();
+        
+        Array.from(document.querySelectorAll('.habit-input')).forEach(i => i.value = "");
+        Array.from(document.querySelectorAll('.habit-select')).forEach(select => {
+            select.value = "";
+            updateHabitColor(select);
+        });
+        Array.from(document.querySelectorAll('.sleep-select')).forEach(select => select.value = "");
+
+        const globalName = localStorage.getItem('tracker_global_userName');
+        if (globalName) document.getElementById('userNameInput').value = globalName;
+
+        if (!saved) return;
+        
+        const data = JSON.parse(saved);
+
+        if(data.name) document.getElementById('userNameInput').value = data.name;
+
+        const habitInputs = document.querySelectorAll('.habit-input');
+        if(data.habitsText) {
+            habitInputs.forEach((input, index) => {
+                if (habitInputs[index]) habitInputs[index].value = data.habitsText[index] || '';
+            });
+        }
+
+        const habitSelects = document.querySelectorAll('.habit-select');
+        if(data.habitsSelection) {
+            habitSelects.forEach((select, index) => {
+                if (habitSelects[index]) {
+                    habitSelects[index].value = data.habitsSelection[index] || '';
+                    updateHabitColor(habitSelects[index]);
+                }
+            });
+        }
+
+        const sleepSelects = document.querySelectorAll('.sleep-select');
+        if(data.sleepSelection) {
+            sleepSelects.forEach((select, index) => {
+                if (sleepSelects[index]) sleepSelects[index].value = data.sleepSelection[index] || '';
+            });
+        }
+
+        if(data.careerHours !== undefined) {
+            totalCareerHours = parseInt(data.careerHours) || 0;
+        }
+        updateCareerUI();
+
+        if(data.notes) document.getElementById('notesArea').value = data.notes;
+    }
+
+    window.onload = loadTracker;
+</script>
+
+</body>
+</html>
